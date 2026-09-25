@@ -14,7 +14,7 @@ resource "kind_cluster" "ultraseven" {
   }
 }
 
-# --- PASSO 2 CORRIGIDO: Aplicar os arquivos YAML com suporte a múltiplos recursos (---) ---
+# --- PASSO 2 CORRIGIDO: Aplicar os arquivos YAML com suporte a múltiplos recursos (---)
 locals {
   manifests_path = "${path.module}/settings"
   yaml_files     = fileset(local.manifests_path, "*.{yaml,yml}")

@@ -88,3 +88,4 @@ chmod +x destroy.sh
 ## 🔒 Segurança (Git)
 
 O projeto já inclui um arquivo `.gitignore` configurado. **Nunca remova as travas do git**, pois o arquivo `terraform.tfstate` armazena de forma aberta senhas do Postgres, chaves e Secrets criados pelo Kubernetes que não devem ser enviados para repositórios públicos.
+
