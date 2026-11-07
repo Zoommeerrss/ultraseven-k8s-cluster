@@ -10,7 +10,7 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.0"
     }
-    # SUBSTITUA PELO PROVEDOR ATUALIZADO ABAIXO:
+    # Mantém o mapeamento explícito para o Terraform nunca mais buscar na HashiCorp
     kubectl = {
       source  = "alekc/kubectl"
       version = "~> 2.0"
@@ -20,5 +20,5 @@ terraform {
 
 provider "kubectl" {
   config_path      = kind_cluster.ultraseven.kubeconfig_path
-  load_config_file = true
+  load_config_file = false 
 }

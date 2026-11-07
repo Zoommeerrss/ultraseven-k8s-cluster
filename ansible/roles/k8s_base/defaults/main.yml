@@ -1,0 +1,3 @@
+---
+# Variáveis padrão para a role de validação
+monitor_namespace: "default"

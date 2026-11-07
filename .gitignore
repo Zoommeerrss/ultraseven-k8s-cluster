@@ -9,6 +9,7 @@
 terraform.tfstate
 terraform.tfstate.backup
 terraform.tfstate.d/
+*.backup
 
 # Crash logs and temporary execution files
 *.log

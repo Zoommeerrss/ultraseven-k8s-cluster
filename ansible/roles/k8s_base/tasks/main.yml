@@ -1,0 +1,8 @@
+---
+- name: "🔍 [Role k8s_base] Coletando informações dos nós do cluster"
+  kubernetes.core.k8s_cluster_info:
+  register: cluster_nodes
+
+- name: "📊 [Role k8s_base] Exibindo nós ativos no terminal"
+  debug:
+    msg: "Conectado ao cluster Kubernetes com sucesso! Contexto atual ativo: {{ cluster_nodes.api_status.current_context | default('Kind Cluster') }}"

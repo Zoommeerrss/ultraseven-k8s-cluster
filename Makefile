@@ -23,6 +23,11 @@ down: ## 🗑️  Destrói completamente o cluster e limpa arquivos locais
 
 status: ## 🔍 Executa o Playbook de diagnóstico de Dia 2 (Troubleshooting)
 	@echo "🛠️ [Makefile] Rodando auditoria de integridade do cluster..."
+	@if [ ! -f ".kube/config" ]; then \
+		echo "❌ Erro: O arquivo .kube/config não foi encontrado!"; \
+		echo "👉 O cluster está desligado. Execute 'make up' primeiro para iniciar o ambiente."; \
+		exit 1; \
+	fi
 	@cd ansible && ansible-playbook playbooks/02_cluster_ops.yml
 
 plan: ## 📋 Executa apenas o planejamento do Terraform para validação

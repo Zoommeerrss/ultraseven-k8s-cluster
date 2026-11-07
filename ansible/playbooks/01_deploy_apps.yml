@@ -18,8 +18,16 @@
         msg: "❌ Erro Crítico: O cluster Kubernetes não foi encontrado ou não está pronto!"
       when: api_status.failed or api_status.connection_error is defined
 
+     # -------------------------------------------------------------------------
+    # PASSO 2: EXECUÇÃO DA ROLE DE INFRAESTRUTURA BASE
     # -------------------------------------------------------------------------
-    # PASSO 2: APLICAÇÃO DOS MANIFESTOS DECLARATIVOS
+    - name: "📦 Executando auditoria inicial do cluster via Role profissional"
+      include_role:
+        # Força o Ansible a subir um nível para achar a pasta roles/ na raiz do projeto ansible
+        name: "../roles/k8s_base"
+
+    # -------------------------------------------------------------------------
+    # PASSO 3: APLICAÇÃO DOS MANIFESTOS DECLARATIVOS
     # -------------------------------------------------------------------------
     - name: "📄 Aplicando configurações e manifestos do laboratório"
       kubernetes.core.k8s:
@@ -30,4 +38,3 @@
       with_fileglob:
         - "../../settings/*.yaml"
         - "../../settings/*.yml"
-
