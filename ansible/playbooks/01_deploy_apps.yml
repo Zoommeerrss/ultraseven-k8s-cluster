@@ -1,0 +1,33 @@
+---
+- name: "🚀 Lab DevOps - Deploy de Aplicações"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    # -------------------------------------------------------------------------
+    # PASSO 1: O TERRENO JÁ NASCEU? (VALIDAÇÃO DE INFRAESTRUTURA)
+    # -------------------------------------------------------------------------
+    - name: "🔍 Validando se a API do Kubernetes está respondendo e acessível"
+      kubernetes.core.k8s_cluster_info:
+      register: api_status
+      ignore_errors: true
+
+    - name: "🚨 Validando conectividade com o cluster"
+      fail:
+        msg: "❌ Erro Crítico: O cluster Kubernetes não foi encontrado ou não está pronto!"
+      when: api_status.failed or api_status.connection_error is defined
+
+    # -------------------------------------------------------------------------
+    # PASSO 2: APLICAÇÃO DOS MANIFESTOS DECLARATIVOS
+    # -------------------------------------------------------------------------
+    - name: "📄 Aplicando configurações e manifestos do laboratório"
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ item }}"
+        # Força o Ansible a injetar o namespace correto se o YAML estiver omitindo
+        namespace: "default" 
+      with_fileglob:
+        - "../../settings/*.yaml"
+        - "../../settings/*.yml"
+

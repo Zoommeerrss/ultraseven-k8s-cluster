@@ -1,6 +1,6 @@
 # --- PASSO 1: Criar o Cluster Kind ---
 resource "kind_cluster" "ultraseven" {
-  name            = "ultraseven-cluster"
+  name            = var.cluster_name
   kubeconfig_path = format("%s/.kube/config", path.module) # Salva o kubeconfig na pasta local do projeto
   wait_for_ready  = true
 
@@ -15,11 +15,6 @@ resource "kind_cluster" "ultraseven" {
 }
 
 # --- PASSO 2 CORRIGIDO: Aplicar os arquivos YAML com suporte a múltiplos recursos (---)
-locals {
-  manifests_path = "${path.module}/settings"
-  yaml_files     = fileset(local.manifests_path, "*.{yaml,yml}")
-}
-
 # Esse bloco divide os arquivos e lida perfeitamente com o "postgres-full.yaml"
 resource "kubectl_manifest" "settings_resources" {
   for_each = local.yaml_files

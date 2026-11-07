@@ -1,3 +1,4 @@
+# providers.tf
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
@@ -9,15 +10,14 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.0"
     }
-    # CERTIFIQUE-SE DE QUE ESTÁ ASSIM (gavinbunney/kubectl):
+    # SUBSTITUA PELO PROVEDOR ATUALIZADO ABAIXO:
     kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = "~> 1.14.0"
+      source  = "alekc/kubectl"
+      version = "~> 2.0"
     }
   }
 }
 
-# Garanta também que o bloco do provider use o nome correto
 provider "kubectl" {
   config_path      = kind_cluster.ultraseven.kubeconfig_path
   load_config_file = true

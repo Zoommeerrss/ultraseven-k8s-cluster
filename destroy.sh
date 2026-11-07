@@ -14,6 +14,11 @@ fi
 # 1. DESTRUIÇÃO DOS RECURSOS VIA TERRAFORM
 # ==========================================
 echo "🗑️  Removendo cluster Kind e manifestos do Kubernetes..."
+
+# Força o reset dos caches locais e baixa a versão correta do provedor antes de destruir
+rm -rf .terraform .terraform.lock.hcl
+terraform init -upgrade -input=false
+
 # O comando destroy remove tudo o que foi declarado no main.tf sem pedir confirmação (-auto-approve)
 terraform destroy -auto-approve -input=false
 

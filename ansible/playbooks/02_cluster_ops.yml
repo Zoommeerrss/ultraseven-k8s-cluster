@@ -1,0 +1,63 @@
+---
+- name: "🛠️ Lab DevOps - Operações de Dia 2 e Diagnóstico do Cluster"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    # Pasta onde o Ansible salvará os relatórios extraídos do cluster
+    output_dir: "../troubleshooting_dump"
+
+  tasks:
+    # -------------------------------------------------------------------------
+    # OPERAÇÃO 1: AUDITORIA GLOBAL DE SAÚDE DO CLUSTER
+    # -------------------------------------------------------------------------
+    - name: "🔍 Coletando informações de todos os Pods que não estão saudáveis"
+      kubernetes.core.k8s_info:
+        kind: Pod
+        field_selectors:
+          - status.phase!=Running
+          - status.phase!=Succeeded
+      register: unhealthy_pods
+
+    - name: "🚨 Exibindo alertas no terminal se houver Pods instáveis"
+      debug:
+        msg: "ATENÇÃO: O Pod '{{ item.metadata.name }}' no namespace '{{ item.metadata.namespace }}' está no estado [{{ item.status.phase }}]!"
+      loop: "{{ unhealthy_pods.resources }}"
+      when: unhealthy_pods.resources | length > 0
+
+    # -------------------------------------------------------------------------
+    # OPERAÇÃO 2: TROUBLESHOOTING AUTOMATIZADO (EXTRAÇÃO DE LOGS)
+    # -------------------------------------------------------------------------
+    - name: "📁 Garantindo que a pasta local para dumps de erro existe"
+      file:
+        path: "{{ output_dir }}"
+        state: directory
+        mode: '0755'
+      when: unhealthy_pods.resources | length > 0
+
+    - name: "📥 Extraindo logs dos Pods problemáticos para análise"
+      kubernetes.core.k8s_log:
+        name: "{{ item.metadata.name }}"
+        namespace: "{{ item.metadata.namespace }}"
+      register: extracted_logs
+      loop: "{{ unhealthy_pods.resources }}"
+      when: unhealthy_pods.resources | length > 0
+
+    - name: "💾 Salvando os logs extraídos em arquivos locais (.log)"
+      copy:
+        content: "{{ item.log }}"
+        dest: "{{ output_dir }}/{{ item.item.metadata.namespace }}_{{ item.item.metadata.name }}_error.log"
+        mode: '0644'
+      loop: "{{ extracted_logs.results }}"
+      when: unhealthy_pods.resources | length > 0 and item.log is defined
+
+    # -------------------------------------------------------------------------
+    # OPERAÇÃO 3: MANUTENÇÃO E LIMPEZA DE AMBIENTE (CLEANUP)
+    # -------------------------------------------------------------------------
+    - name: "🧹 Removendo Pods finalizados com sucesso para liberar memória"
+      kubernetes.core.k8s:
+        state: absent
+        kind: Pod
+        field_selectors:
+          - status.phase=Succeeded
