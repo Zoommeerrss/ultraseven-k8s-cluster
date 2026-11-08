@@ -25,10 +25,7 @@ k9s
 
 ### Instalar Kind (Kubernetes in Docker)
 ```bash
-# Baixar o binário direto (AMD64)
-curl -Lo ./kind https://github.com
-
-# Dar permissão e mover para o PATH
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.17.0/kind-linux-amd64
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 ```
@@ -289,9 +286,24 @@ No K9s, selecione o Pod, aperte e (edit) ou procure a seção Environment nos de
 
 ### 🐘 Banco de Dados (PostgreSQL)
 
+- **Acessar os nodes existentes:**
+```bash
+kubectl get nodes -o wide
+```
+
+- **Acessar os pods existentes:**
+```bash
+kubectl get pods
+```
+
+- **Acessar os pods existentes:**
+```bash
+kubectl exec -it deployment/postgres-db -- printenv
+```
+
 - **Acessar o terminal do banco (psql):**
 ```bash
-  kubectl exec -it postgres-db -- psql -U postgres
+  kubectl exec -it deployment/postgres-db -- psql -U postgres
 ```
 
 - **Acessar o banco pelo Windows (DBeaver/IntelliJ):**
