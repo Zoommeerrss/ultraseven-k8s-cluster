@@ -1,6 +1,6 @@
 # ☸️ Guia de Comandos: Cluster Kubernetes (Kind) no WSL
 
-Este guia contém os comandos essenciais utilizados para configurar, gerenciar e testar o cluster local **ultraman-cluster**.
+Este guia contém os comandos essenciais utilizados para configurar, gerenciar e testar o cluster local **ultraseven-cluster**.
 
 ---
 
@@ -38,95 +38,95 @@ sudo mv ./kind /usr/local/bin/kind
 ## 🛠️ Gerenciamento do Cluster (Kind)
 
 - **Criar o cluster:**
-  ```bash
-  kind create cluster --name ultraman-cluster
-  ```
+```bash
+  kind create cluster --name ultraseven-cluster
+```
 - **Listar clusters ativos:**
-  ```bash
+```bash
   kind get clusters
-  ```
+```
 - **Definir foco no cluster (Contexto):**
-  ```bash
-  kubectl config use-context kind-ultraman-cluster
-  ```
+```bash
+  kubectl config use-context kind-ultraseven-cluster
+```
 - **Excluir o cluster:**
-  ```bash
-  kind delete cluster --name ultraman-cluster
-  ```
+```bash
+  kind delete cluster --name ultraseven-cluster
+```
 
 ---
 
 ## 📦 Gerenciamento de Cargas (Deployments e Pods)
 
 - **Criar um Deployment com réplicas:**
-  ```bash
-  kubectl create deployment nginx-ultraman --image=nginx --replicas=3
-  ```
+```bash
+  kubectl create deployment nginx-ultraseven --image=nginx --replicas=3
+```
 - **Alterar o número de réplicas (Scale):**
-  ```bash
-  kubectl scale deployment nginx-ultraman --replicas=5
-  ```
+```bash
+  kubectl scale deployment nginx-ultraseven --replicas=5
+```
 - **Listar todos os Pods:**
-  ```bash
+```bash
   kubectl get pods
-  ```
+```
 - **Ver Pods de todos os Namespaces (Sistema):**
-  ```bash
+```bash
   kubectl get pods -A
-  ```
+```
 
 ---
 
 ## 🌐 Rede e Acesso (Services)
 
 - **Expor Deployment como um Serviço interno:**
-  ```bash
-  kubectl expose deployment nginx-ultraman --port=80 --target-port=80 --name=ultraman-service
-  ```
+```bash
+  kubectl expose deployment nginx-ultraseven --port=80 --target-port=80 --name=ultraseven-service
+```
 - **Acessar pelo navegador do Windows (Port-Forward):**
-  ```bash
+```bash
   # Acessível em http://localhost:9090
-  kubectl port-forward svc/ultraman-service 9090:80
-  ```
+  kubectl port-forward svc/ultraseven-service 9090:80
+```
 - **Listar Serviços ativos:**
-  ```bash
+```bash
   kubectl get svc
-  ```
+```
 
 ---
 
 ## 🔍 Inspeção e Debug
 
 - **Abrir interface visual no terminal:**
-  ```bash
+```bash
   k9s
-  ```
+```
 - **Ver detalhes técnicos de um recurso:**
-  ```bash
+```bash
   kubectl describe pod <nome-do-pod>
-  ```
+```
 - **Ver logs de um Pod:**
-  ```bash
+```bash
   kubectl logs -f <nome-do-pod>
-  ```
+```
 - **Entrar no terminal dentro do Container:**
-  ```bash
+```bash
   kubectl exec -it <nome-do-pod> -- bash
-  ```
+```
 
 ---
 
 ## Iniciando e Parando o Cluster
 
 - **Parando:**
-  ```bash
-  docker stop ultraman-cluster-control-plane
-  ```
+```bash
+  docker stop ultraseven-cluster-control-plane
+```
   
 - **Iniciando:**
-  ```bash
-  docker start ultraman-cluster-control-plane
-  ```
+```bash
+  docker start ultraseven-cluster-control-plane
+```
 
 ---
 
@@ -136,7 +136,7 @@ sudo mv ./kind /usr/local/bin/kind
 
 Estágio de Build (Usa Maven com OpenJDK para compilar)
 
-  ```bash
+```bash
 # Estágio de Compilação
 FROM ubuntu:24.04 AS build
 WORKDIR /app
@@ -167,37 +167,37 @@ COPY --from=build /app/target/quarkus-app/quarkus/ /app/quarkus/
 EXPOSE 8080
 # O ponto de entrada padrão do Quarkus é o quarkus-run.jar
 ENTRYPOINT ["java", "-jar", "quarkus-run.jar"]
-  ```
+```
   
 ### ☕ Deploy de Projeto Java (OpenJDK)
 
 1. **Gerar a imagem Docker:**
-   ```bash
-   docker build -t java-app-ultraman:v1 .
-   ```
+ ```bash
+   docker build -t java-app-ultraseven:v1 .
+ ```
 
 2. **Carregar a imagem para dentro do Kind:**
    *(Obrigatório para o cluster enxergar a imagem local)*
-   ```bash
-   kind load docker-image java-app-ultraman:v1 --name ultraman-cluster
-   ```
+ ```bash
+   kind load docker-image java-app-ultraseven:v1 --name ultraseven-cluster
+ ```
 
 3. **Criar o Deployment e o Serviço:**
-   ```bash
+ ```bash
    # Criar o deploy
-   kubectl create deployment java-app --image=java-app-ultraman:v1
+   kubectl create deployment java-app --image=java-app-ultraseven:v1
    
    # Escalar para 3 réplicas
    kubectl scale deployment java-app --replicas=3
    
    # Expor porta
    kubectl expose deployment java-app --port=8080 --target-port=8080 --name=java-service
-   ```
+ ```
 
 4. **Acessar no Windows:**
-   ```bash
+ ```bash
    kubectl port-forward svc/java-service 8080:8080
-   ```
+ ```
 
 ---
 
@@ -211,21 +211,21 @@ Isso evita que você exponha senhas no seu Dockerfile ou no histórico do termin
 
 Vamos supor que seu app Java precise de um perfil (Spring Profile) e uma URL de API.
 
-   ```bash
+ ```bash
 kubectl create configmap java-config \
   --from-literal=SPRING_PROFILES_ACTIVE=prod \
-  --from-literal=API_URL=https://ultraman.com
-   ```
+  --from-literal=API_URL=https://ultraseven.com
+ ```
 
 #### Criando um Secret (Dados Sensíveis)   
 
 Para senhas de banco de dados ou chaves de API. O Kubernetes criptografa esses dados em base64.
 
-   ```bash
+ ```bash
 kubectl create secret generic java-db-secret \
   --from-literal=DB_PASSWORD=senha_super_secreta_123 \
   --from-literal=DB_USERNAME=admin
-   ```   
+ ```   
  
 
 ### Utilizando deployment.yaml
@@ -234,7 +234,7 @@ Para gerenciar variáveis de ambiente (Env Vars) no Kubernetes, usamos dois obje
 
 Isso evita que você exponha senhas no seu Dockerfile ou no histórico do terminal. 
 
-   ```bash
+ ```bash
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -251,7 +251,7 @@ spec:
     spec:
       containers:
       - name: java-container
-        image: java-app-ultraman:v1
+        image: java-app-ultraseven:v1
         ports:
         - containerPort: 8080
         env:
@@ -267,21 +267,21 @@ spec:
               secretKeyRef:
                 name: java-db-secret
                 key: DB_PASSWORD
-   ```
+ ```
    
 #### Como aplicar e verificar
 
 No console, digite:
 
-   ```bash
+ ```bash
 kubectl apply -f deployment.yaml
-   ```   
+ ```   
 
 Verifique se as variáveis subiram:
    
-   ```bash
+ ```bash
 kubectl exec -it <nome-do-pod> -- env
-   ```   
+ ```   
    
 No K9s, selecione o Pod, aperte e (edit) ou procure a seção Environment nos detalhes do Pod.
 
@@ -290,21 +290,21 @@ No K9s, selecione o Pod, aperte e (edit) ou procure a seção Environment nos de
 ### 🐘 Banco de Dados (PostgreSQL)
 
 - **Acessar o terminal do banco (psql):**
-  ```bash
+```bash
   kubectl exec -it postgres-db -- psql -U postgres
-  ```
+```
 
 - **Acessar o banco pelo Windows (DBeaver/IntelliJ):**
-  ```bash
+```bash
   # Agora você pode conectar no localhost:5432 do Windows
   kubectl port-forward pod/postgres-db 5432:5432
-  ```
+```
   
 #### Criar o Pedido de Espaço
 
 Criar o Pedido de Espaço
 
-  ```bash
+```bash
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -315,7 +315,7 @@ spec:
   resources:
     requests:
       storage: 1Gi  # Reserva 1 Gigabyte para o banco
-  ```
+```
     
 #### Criar o Postgres usando o Volume
 
@@ -325,7 +325,7 @@ Ele vai montar o volume na pasta onde o Postgres guarda os dados (/var/lib/postg
 
 Crie o arquivo postgres-deployment.yaml:
 
-  ```bash
+```bash
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -357,20 +357,20 @@ spec:
       - name: postgres-storage
         persistentVolumeClaim:
           claimName: postgres-pvc
-  ```
+```
   
 #### 💾 Persistência de Dados (Volumes)
 
 - **Verificar se o volume foi criado:**
-  ```bash
+```bash
   kubectl get pvc
-  ```
+```
 
 - **Aplicar configuração de volume e banco:**
-  ```bash
+```bash
   kubectl apply -f postgres-pvc.yaml
   kubectl apply -f postgres-deployment.yaml
-  ```
+```
 
 #### Serviço Fixo para o Banco de Dados
 
@@ -380,7 +380,7 @@ Assim, seu código Java sempre apontará para postgres-service, não importa se 
 
 Crie um arquivo chamado postgres-service.yaml:
 
-  ```bash
+```bash
 apiVersion: v1
 kind: Service
 metadata:
@@ -393,28 +393,28 @@ spec:
       port: 5432        # Porta que o Service expõe para o cluster
       targetPort: 5432  # Porta real onde o container do Postgres escuta
   type: ClusterIP       # Tipo padrão para comunicação interna entre Pods
-  ```
+```
   
 #### Como utilizar no seu Projeto Java
 
 Com este Service aplicado, a sua String de Conexão (JDBC) no IntelliJ deve ficar exatamente assim:
  
-  ```bash
+```bash
 jdbc:postgresql://postgres-service:5432/postgres 
-  ```
+```
   
 #### 🔌 Redes: Serviço de Banco de Dados
 
 - **Aplicar o serviço do banco:**
-  ```bash
+```bash
   kubectl apply -f postgres-service.yaml
-  ```
+```
 
 - **Verificar se o DNS interno está resolvendo:**
   *(Rode este comando de dentro de qualquer outro Pod)*
-  ```bash
+```bash
   kubectl exec -it <nome-do-seu-pod-java> -- nslookup postgres-service
-  ```
+```
   
 #### PVC, Service e Deployment Juntos
 
@@ -422,7 +422,7 @@ Aqui está o arquivo postgres-full.yaml unificado, contendo o PVC, Service e Dep
 
 O arquivo configura o banco de dados Postgres com armazenamento persistente e senha protegida por segredo.
 
-  ```bash
+```bash
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -488,18 +488,18 @@ spec:
       - name: postgres-storage
         persistentVolumeClaim:
           claimName: postgres-pvc
-  ```
+```
   
 #### Como aplicar
 
 1. Crie o segredo:
-  ```bash
+```bash
 kubectl create secret generic postgres-secret --from-literal=password=password
-  ```
+```
 2. Para aplicar o arquivo full, utilize:
-  ```bash
+```bash
 kubectl apply -f postgres-full.yaml
-  ```
+```
   
 #### Como eu testo o serviço do Postgres?
 
@@ -517,71 +517,71 @@ kubectl get pods -l app=postgres
 
 - Verifique se o serviço mapeou a porta corretamente
 
-  ```bash
+```bash
 kubectl get service postgres-service
-  ```
+```
 
 - Veja os logs do banco de dados para checar se ele iniciou com sucesso
 
-  ```bash
+```bash
 kubectl logs -l app=postgres
-  ```
+```
   
 Teste de Conexão Interna (Direto no Cluster)Você pode interagir diretamente com o banco criando um terminal temporário dentro do próprio container do PostgreSQL.bash# 
 
 Entrar no terminal do container (substitua pelo nome real do seu Pod)
 
-  ```bash
+```bash
 kubectl exec -it deployment/postgres-db -- psql -U postgres
-  ```
+```
   
 Teste de Conexão Externa (Sua Máquina / IDE)
 
 Como você configurou o serviço como NodePort na porta 30432, você pode conectar usando ferramentas como DBeaver, pgAdmin ou o terminal da sua máquina local.Host: localhost (se usar Minikube/Docker Desktop) ou o IP de um nó do cluster.
 
-  ```bash
+```bash
 Porta: 30432
 Usuário: postgres
 Senha: A senha definida na secret app-secrets sob a chave SPRING_DATASOURCE_PASSWORD.
-  ```
+```
 
 Se estiver usando o Minikube e o localhost não funcionar, descubra o IP correto do nó com o comando:
 
-  ```bash
+```bash
 minikube service postgres-service --url
-  ```
+```
   
 #### Comandos de Verificação do Sistema Postgres (psql)
 
 -Listar todos os bancos de dados: 
 
-  ```sql 
+```sql 
   \l
-  ```
+```
 
 -Listar todas as tabelas do banco atual: 
 
-  ```sql 
+```sql 
   \dt
-  ```
+```
   
 -Verificar os usuários (roles) criados e suas permissões: 
 
-  ```sql 
+```sql 
   \du
-  ```
+```
   
 -Conectar a um banco de dados específico: 
 
-  ```sql 
+```sql 
   \c nome_do_banco
-  ```
+```
   
 -Sair do terminal do Postgres: 
 
-  ```sql 
+```sql 
   \q
-  ```
+```
 
 ### 💡 Dica de "Mestre" do Kubernetes
 
@@ -597,7 +597,7 @@ Os projetos devem ser separados em 3 partes:
 
 O Dockerfile já foi mencionado acima. Vamos para o app-deployment.yaml:
 
-  ```bash
+```bash
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -674,11 +674,11 @@ spec:
       targetPort: 8080
       nodePort: 30080 # Esta porta liga o Service ao 'containerPort' do Kind
 
-  ```
+```
 
 2. Infra do Banco de Dados: postgres-full.yaml
 
-  ```bash
+```bash
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -744,7 +744,7 @@ spec:
       - name: postgres-storage
         persistentVolumeClaim:
           claimName: postgres-pvc
-  ```
+```
   
 ⚠️ Importante: Ajuste no Kind (O "Pulo do Gato")
 
@@ -758,11 +758,11 @@ Se não funcionar direto, você tem duas opções:A forma rápida: Use o kubectl
 
 A forma definitiva: Recriar o cluster com um arquivo de configuração (kind-config.yaml) que mapeia as portas:
 
-  ```bash
+```bash
 # kind-config.yaml
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-name: ultraman-cluster # Define o nome aqui também
+name: ultraseven-cluster # Define o nome aqui também
 nodes:
 - role: control-plane
   extraPortMappings:
@@ -788,12 +788,12 @@ spec:
       port: 8080
       targetPort: 8080
       nodePort: 30080 # Esta porta liga o Service ao 'containerPort' do Kind
-  ```
+```
 
 3. Variáveis de Ambiene (Env Vars): config.yaml e secrets.yaml
 
 3.1. config.yaml
-  ```bash
+```bash
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -806,20 +806,20 @@ data:
   # Configurações de JVM
   JAVA_TOOL_OPTIONS: "-Xms256m -Xmx512m"
 
-  ```
+```
 
 3.2. secrets.yaml
-  ```bash
+```bash
 apiVersion: v1
 kind: Secret
 metadata:
   name: app-secrets
 type: Opaque
 data:
-  # 'ultraman123' convertido para base64
+  # 'ultraseven123' convertido para base64
   SPRING_DATASOURCE_PASSWORD: dWx0cmFtYW4xMjM=
 
-  ```
+```
 
 #### 📂 Organização do Projeto
 
@@ -843,16 +843,16 @@ data:
 
 Antes de tudo, instale o Maven (se nao estiver instalado) no WSL:
 
-  ```bash
+```bash
   sudo apt update
   sudo apt install maven
-  ```
+```
   
 Ao terminar, verifique se esta instalado e qual versao:
 
-  ```bash
+```bash
 mvn -version
-  ```
+```
 
 A estrutura de pastas que deve ser utilizada para isolar a infra do cluster e o projeto Java deve ser assim:
 
@@ -885,7 +885,7 @@ A estrutura de pastas que deve ser utilizada para isolar a infra do cluster e o 
 PROJECT_FOLDER_NAME=$(ls -d ../*/ | grep -v "infra-cluster" | head -n 1 | xargs basename)
 
 # Nome que você quer dar ao cluster Kind
-CLUSTER_NAME="ultraman-cluster"
+CLUSTER_NAME="ultraseven-cluster"
 # ==============================================================================
 
 # caminhos Relativos
@@ -998,16 +998,16 @@ Para que a automação funcione corretamente, o script espera que a pasta da inf
 
 1. **Copie** a pasta `infra-cluster` para a raiz do seu workspace (ao lado da pasta do seu projeto Java).
 2. **Edite** o arquivo `deploy-script.sh` e atualize o nome da pasta do projeto:
-   ```bash
+ ```bash
    PROJECT_FOLDER_NAME="nome-do-seu-projeto"
-   ```
+ ```
 3. **Verifique os YAMLs** na pasta `settings/` para garantir que as credenciais e URLs de banco de dados estão corretas para o novo contexto.
 4. **Execute o deploy** via terminal (WSL/Linux):
-   ```bash
+ ```bash
    cd infra-cluster
    chmod +x deploy-script.sh
    ./deploy-script.sh
-   ```
+ ```
 
 ---
 
@@ -1045,11 +1045,11 @@ Após a execução, os serviços estarão mapeados conforme o `kind-config.yaml`
 
 Este script ignora o Java e foca em deixar o ecossistema pronto.
 
-   ```bash
+ ```bash
 #!/bin/bash
 
 # --- Configurações ---
-CLUSTER_NAME="ultraman-cluster"
+CLUSTER_NAME="ultraseven-cluster"
 KIND_CONFIG="./kind-config.yaml"
 SETTINGS_DIR="./settings"
 
@@ -1084,11 +1084,11 @@ echo "🔌 Banco: localhost:5432"
 echo "✅ Verifique o status no K9s."
 echo "🛠️  Próximo passo: Rodar o script de deploy da sua aplicação Java."
 echo "--------------------------------------------------"
-   ```
+ ```
    
 ## Agora Deployment Desacoplado!
 
-   ```bash
+ ```bash
 #!/bin/bash
 
 # ==============================================================================
@@ -1099,7 +1099,7 @@ echo "--------------------------------------------------"
 # ==============================================================================
 
 # --- Configurações de Contexto ---
-CLUSTER_NAME="ultraman-cluster"
+CLUSTER_NAME="ultraseven-cluster"
 
 # 1. Define o caminho do projeto (Argumento $1 ou padrão relativo)
 APP_DIR="${1:-../nome-do-seu-projeto/.deployment}"
@@ -1173,23 +1173,23 @@ echo "✅ DEPLOY FINALIZADO COM SUCESSO!"
 echo "🌐 URL: http://localhost:8080"
 echo "✅ Verifique o status no K9s."
 echo "--------------------------------------------------"
-   ```
+ ```
 
 ---
 
 ## 🧹 Limpeza
 
 - **Remover o Deployment e o Serviço:**
-  ```bash
-  kubectl delete deployment nginx-ultraman
-  kubectl delete svc ultraman-service
-  ```
+```bash
+  kubectl delete deployment nginx-ultraseven
+  kubectl delete svc ultraseven-service
+```
 - **Remover todos os recursos do namespace atual:**
-  ```bash
+```bash
   kubectl delete all --all
-  ```
+```
   
 - **Apagar Cluster:**
-  ```bash
-  kind delete cluster --name ultraman-cluster
-  ```   
+```bash
+  kind delete cluster --name ultraseven-cluster
+```   
